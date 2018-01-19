@@ -10,4 +10,12 @@
         android:id="@+id/menu_add_items"
         android:title="@string/add_random_items" />
 
+    <item
+        android:id="@+id/menu_profile"
+        android:title="@string/profile" />
+
+    <item
+        android:id="@+id/menu_teacher"
+        android:title="@string/teacher" />
+
 </menu>

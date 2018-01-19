@@ -34,7 +34,9 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.example.fireeats.adapter.RestaurantAdapter;
+import com.google.firebase.example.fireeats.model.User;
 import com.google.firebase.example.fireeats.viewmodel.MainActivityViewModel;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements
     RecyclerView mRestaurantsRecycler;
 
     @BindView(R.id.view_empty)
-    ViewGroup mEmptyView;;
+    ViewGroup mEmptyView;
 
     private FirebaseFirestore mFirestore;
     private Query mQuery;
@@ -79,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements
     private RestaurantAdapter mAdapter;
 
     private MainActivityViewModel mViewModel;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +106,13 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void initFirestore() {
-        // TODO(developer): Implement
+
+        mFirestore = FirebaseFirestore.getInstance();
+
+        //Get the 50 highest rated restaurants
+        mQuery = mFirestore.collection("restaurants")
+                .orderBy("avgRating", Query.Direction.DESCENDING)
+                .limit(LIMIT);
     }
 
     private void initRecyclerView() {
@@ -143,6 +153,8 @@ public class MainActivity extends AppCompatActivity implements
         // Start sign in if necessary
         if (shouldStartSignIn()) {
             startSignIn();
+
+
             return;
         }
 
@@ -166,12 +178,63 @@ public class MainActivity extends AppCompatActivity implements
     private void onAddItemsClicked() {
         // TODO(developer): Add random restaurants
         showTodoToast();
+
+        //get a reference to the restaurants collection
+        /*CollectionReference restaurants = mFirestore.collection("restaurants");
+
+        for(int i = 0; i < 10; i++){
+            //get a random Restaurant POJO
+            Restaurant restaurant = RestaurantUtil.getRandom(this);
+
+            //Add a new document to the restaurants collection
+            restaurants.add(restaurant);
+        }*/
+
+        //Get reference
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        //CollectionReference users = mFirestore.collection("users");
+
+        User currentUser = new User(user.getUid(), user.getEmail(), "abc",
+                user.getDisplayName(), "School1", "Student");
+
+        //users.add(currentUser);
+        mFirestore.collection("users").document(user.getUid()).set(currentUser);
+
     }
 
     @Override
     public void onFilter(Filters filters) {
-        // TODO(developer): Construct new query
-        showTodoToast();
+        //construct query basic query
+        Query query = mFirestore.collection("restaurants");
+
+        //category (equality filter)
+        if(filters.hasCategory()){
+            query = query.whereEqualTo("category", filters.getCategory());
+
+        }
+
+        //city (equality filter)
+        if(filters.hasCity()){
+            query = query.whereEqualTo("city", filters.getCity());
+        }
+
+        // Price (equality filter)
+        if(filters.hasPrice()){
+            query = query.whereEqualTo("price", filters.getPrice());
+        }
+
+        //sort by (orderBy with direction)
+        if(filters.hasSortBy()){
+            query = query.orderBy(filters.getSortBy(), filters.getSortDirection());
+        }
+
+        //limit items
+        query = query.limit(LIMIT);
+
+        //update the query
+        mQuery = query;
+        mAdapter.setQuery(query);
 
         // Set header
         mCurrentSearchView.setText(Html.fromHtml(filters.getSearchDescription(this)));
@@ -196,6 +259,14 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.menu_sign_out:
                 AuthUI.getInstance().signOut(this);
                 startSignIn();
+                break;
+            case R.id.menu_profile:
+                Intent intent = new Intent(this, ProfileActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.menu_teacher:
+                Intent intent1 = new Intent(this, TeacherHomeActivity.class);
+                startActivity(intent1);
                 break;
         }
         return super.onOptionsItemSelected(item);

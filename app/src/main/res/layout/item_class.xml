@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/class_item_name"
+        style="@style/AppTheme.Subheader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="-2dp"
+
+
+        android:ellipsize="end"
+        android:maxLines="1"
+        tools:text="Foo's Bar" />
+
+
+    <TextView
+        android:id="@+id/class_item_teachername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/class_item_name"
+        android:layout_below="@+id/class_item_name"
+        android:layout_marginBottom="4dp"/>
+
+
+
+    <TextView
+        android:id="@+id/class_time"
+        style="@style/AppTheme.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/class_item_name"
+        android:layout_below="@+id/class_item_teachername"
+        android:textColor="@color/greySecondary"
+        tools:text="Italian" />
+
+    <TextView
+        android:id="@+id/class_item_time_divider"
+        style="@style/AppTheme.TextDivider"
+        android:layout_alignTop="@+id/class_time"
+        android:layout_toRightOf="@+id/class_time"
+        android:text="@string/divider_bullet" />
+
+    <TextView
+        android:id="@+id/room_number"
+        style="@style/AppTheme.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/class_time"
+        android:layout_toRightOf="@+id/class_item_time_divider"
+        android:textColor="@color/greySecondary"
+        tools:text="San Francisco" />
+
+    <TextView
+        android:id="@+id/class_item_seats"
+        style="@style/AppTheme.Caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/greySecondary"
+         />
+
+</RelativeLayout>
