@@ -140,4 +140,5 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_from_fragment">Hello from fragment</string>
+    <string name="drawer_item_classes">Classes</string>
 </resources>

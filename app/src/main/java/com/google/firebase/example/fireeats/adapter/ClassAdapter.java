@@ -6,9 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.google.firebase.example.fireeats.R;
 import com.google.firebase.example.fireeats.model.ClassSection;
-
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
@@ -73,17 +73,21 @@ public class ClassAdapter extends FirestoreAdapter<ClassAdapter.ClassViewHolder>
         public void bind(final DocumentSnapshot snapshot,
                          final OnClassSelectedListener listener) {
 
+
             ClassSection classSection = snapshot.toObject(ClassSection.class);
             Resources resources = itemView.getResources();
 
 
             className.setText(classSection.getName());
 
-            teacherName.setText(classSection.getTeacherName());
+            //String strTeacherName = snapshot.get("teacher(s)").toString();
+            String teachers = classSection.getTeachers().toString();
+            teacherName.setText(teachers);
+
             classTime.setText(classSection.getTime());
 
             roomNumber.setText(classSection.getRoomNumber());
-            classSeats.setText(classSection.getSeats());
+            classSeats.setText(Integer.toString(classSection.getSeats()));
 
             // Click listener
             itemView.setOnClickListener(new View.OnClickListener() {

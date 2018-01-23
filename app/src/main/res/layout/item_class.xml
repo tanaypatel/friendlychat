@@ -58,7 +58,7 @@
         android:layout_alignTop="@+id/class_time"
         android:layout_toRightOf="@+id/class_item_time_divider"
         android:textColor="@color/greySecondary"
-        tools:text="San Francisco" />
+         />
 
     <TextView
         android:id="@+id/class_item_seats"

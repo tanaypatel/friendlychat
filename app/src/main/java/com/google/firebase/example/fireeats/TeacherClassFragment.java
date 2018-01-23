@@ -48,30 +48,40 @@ public class TeacherClassFragment extends Fragment implements
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ButterKnife.bind(getActivity());
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        View view = inflater.inflate(R.layout.fragment_teacher_class, container, false);
 
+        ButterKnife.bind(this, view);
+        // Inflate the layout for this fragment
+        return view;
+    }
+
+
+    @Override
+    public void onStart(){
+        super.onStart();
 
         initFirestore();
         initRecyclerView();
-
-
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_teacher_class, container, false);
+        // Start listening for Firestore updates
+        if (mAdapter != null) {
+            mAdapter.startListening();
+        }
     }
 
     private void initFirestore() {
 
         mFirestore = FirebaseFirestore.getInstance();
 
-        //Get the 50 highest rated restaurants
-        mQuery = mFirestore.collection("classes")
-                .orderBy("seats", Query.Direction.DESCENDING);
+        //Get the classes
+        mQuery = mFirestore.collection("classes");
+
     }
 
     private void initRecyclerView() {
@@ -106,15 +116,7 @@ public class TeacherClassFragment extends Fragment implements
     }
 
 
-    @Override
-    public void onStart(){
-        super.onStart();
 
-        // Start listening for Firestore updates
-        if (mAdapter != null) {
-            mAdapter.startListening();
-        }
-    }
     @Override
     public void onClassSelected(DocumentSnapshot classes) {
         // Go to the details page for the selected restaurant
