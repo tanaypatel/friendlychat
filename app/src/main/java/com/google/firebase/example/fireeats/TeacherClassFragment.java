@@ -1,6 +1,7 @@
 package com.google.firebase.example.fireeats;
 
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -13,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.example.fireeats.adapter.ClassAdapter;
+import com.google.firebase.example.fireeats.model.ClassSection;
+import com.google.firebase.example.fireeats.viewmodel.TeacherViewModel;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -41,6 +44,9 @@ public class TeacherClassFragment extends Fragment implements
 
     private ClassAdapter mAdapter;
 
+    //viewmodel
+    private TeacherViewModel teacherViewModel;
+
     public TeacherClassFragment() {
         // Required empty public constructor
     }
@@ -49,6 +55,7 @@ public class TeacherClassFragment extends Fragment implements
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        teacherViewModel = ViewModelProviders.of(getActivity()).get(TeacherViewModel.class);
     }
 
     @Override
@@ -89,10 +96,12 @@ public class TeacherClassFragment extends Fragment implements
             Log.w(TAG, "No query, not initializing RecyclerView");
         }
 
+
         mAdapter = new ClassAdapter(mQuery, this) {
 
             @Override
             protected void onDataChanged() {
+
                 // Show/hide content if the query returns empty.
                 if (getItemCount() == 0) {
                     mClassesRecycler.setVisibility(View.GONE);
@@ -116,9 +125,29 @@ public class TeacherClassFragment extends Fragment implements
     }
 
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAdapter != null) {
+            mAdapter.stopListening();
+        }
+    }
 
     @Override
     public void onClassSelected(DocumentSnapshot classes) {
-        // Go to the details page for the selected restaurant
+        //put data in viewholder
+        TeacherViewModel teacherViewModel = ViewModelProviders.of(getActivity())
+                .get(TeacherViewModel.class);
+
+        teacherViewModel.select(classes.toObject(ClassSection.class));
+
+        // Go to the details page for the selected class
+        ClassDescriptionFragment classDescriptionFragment = new ClassDescriptionFragment();
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.teacher_placeholder, classDescriptionFragment)
+                .addToBackStack(null)
+                .commit();
+
     }
 }
